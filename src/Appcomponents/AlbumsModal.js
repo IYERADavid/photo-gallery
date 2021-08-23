@@ -39,12 +39,16 @@ const Transition = forwardRef(function Transition(props, ref) {
 
 export default function AlbumsModal() {
   const classes = useStyles();
-  let { docs } = useFirestore('Albums')
+  const { docs } = useFirestore('Albums')
   const [open, setOpen] = useState(false);
   const [selectedAlbum, setselectedAlbum] = useState('Default');
-
-  if(docs && docs[docs.length -1].id === 'Default'){
-    docs = docs.splice(-1)
+  
+  let docs_list = []
+  if(docs){
+    docs_list = [...docs]
+    if(docs_list[docs_list.length -1].id === 'Default'){
+      docs_list.pop()
+    }
   }
   const handleClickOpen = () => {
     setOpen(true);
@@ -58,7 +62,7 @@ export default function AlbumsModal() {
 
   return (
     <>
-    {docs &&
+    {docs_list &&
     <div>
       <Button variant="outlined" onClick={handleClickOpen}
       className={classes.btn}>
@@ -85,7 +89,7 @@ export default function AlbumsModal() {
                 input={<Input />}
               >
                 <MenuItem key="default" value="Default">Default</MenuItem>
-                {docs.map((doc, index) => (
+                {docs_list.map((doc, index) => (
                     <MenuItem key={index} value={doc.id}>{doc.id}</MenuItem>
                 ))}
               </Select>
